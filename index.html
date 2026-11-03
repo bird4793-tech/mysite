@@ -124,7 +124,7 @@
 
             <!-- Top Floating Controls & Contact Button -->
             <div class="absolute top-6 right-6 sm:right-12 lg:right-20 flex items-center space-x-3 z-20">
-                <a href="https://docs.google.com/spreadsheets/d/1ta0MGLoWGZG7moUwEZYVYJZCyzzdWInO6N5p1n3CkAk/edit?usp=drive_link" target="_blank" class="px-4 py-2.5 rounded-full bg-accent text-white text-xs font-semibold uppercase tracking-wider hover:opacity-90 transition-all shadow-sm flex items-center space-x-2">
+                <a href="#contact" class="px-4 py-2.5 rounded-full bg-accent text-white text-xs font-semibold uppercase tracking-wider hover:opacity-90 transition-all shadow-sm flex items-center space-x-2">
                     <i class="fa-solid fa-envelope text-[11px]"></i>
                     <span>Contact</span>
                 </a>
@@ -263,12 +263,32 @@
                 </div>
             </section>
 
-            <!-- Contact Section -->
+            <!-- Contact Section with Form -->
             <section id="contact" class="space-y-8 pb-12">
                 <div class="border-b border-[var(--border-color)] pb-4">
                     <span class="text-xs font-mono uppercase tracking-widest text-accent">Contact</span>
                     <h3 class="text-2xl sm:text-3xl font-serif font-bold text-[var(--text-color)] mt-1">與我聯繫</h3>
                 </div>
+
+                <form id="contact-form" onsubmit="handleFormSubmit(event)" class="p-8 sm:p-10 rounded-xl bg-[var(--card-bg)] border border-[var(--border-color)] space-y-6 transition-colors duration-300">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div>
+                            <label for="name" class="block text-xs font-mono uppercase tracking-wider text-[var(--muted-color)] mb-2">您的姓名</label>
+                            <input type="text" id="name" required class="w-full px-4 py-3 rounded-lg bg-[var(--bg-color)] border border-[var(--border-color)] text-[var(--text-color)] text-sm focus:outline-none focus:border-accent">
+                        </div>
+                        <div>
+                            <label for="email" class="block text-xs font-mono uppercase tracking-wider text-[var(--muted-color)] mb-2">電子郵件</label>
+                            <input type="email" id="email" required class="w-full px-4 py-3 rounded-lg bg-[var(--bg-color)] border border-[var(--border-color)] text-[var(--text-color)] text-sm focus:outline-none focus:border-accent">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="message" class="block text-xs font-mono uppercase tracking-wider text-[var(--muted-color)] mb-2">訊息內容</label>
+                        <textarea id="message" rows="4" required class="w-full px-4 py-3 rounded-lg bg-[var(--bg-color)] border border-[var(--border-color)] text-[var(--text-color)] text-sm focus:outline-none focus:border-accent"></textarea>
+                    </div>
+                    <button type="submit" class="w-full py-4 rounded-lg bg-[var(--text-color)] text-[var(--bg-color)] font-bold text-xs uppercase tracking-widest hover:bg-accent hover:text-white transition-all">
+                        送出訊息
+                    </button>
+                </form>
             </section>
 
         </main>
@@ -324,6 +344,36 @@
                 toast.classList.remove('translate-y-0', 'opacity-100');
                 toast.classList.add('translate-y-24', 'opacity-0');
             }, 3500);
+        }
+
+        // 表單送出並寫入 Google Apps Script
+        async function handleFormSubmit(event) {
+            event.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const message = document.getElementById('message').value;
+
+            // 已填入您的 Apps Script 部署網址
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbzOsKn-eFnDQbUrqpg8IJln_mRd-hwMHgV9WCqwlkFindI-CKJKt8sG1b8-nezRc0Zo/exec'; 
+
+            showToast("正在傳送訊息至試算表...");
+
+            try {
+                const response = await fetch(scriptURL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name, email, message })
+                });
+
+                showToast(`謝謝您，${name}！訊息已成功發送並記錄。`);
+                document.getElementById('contact-form').reset();
+            } catch (error) {
+                console.error('Error!', error.message);
+                showToast("發送失敗，請稍後再試。");
+            }
         }
     </script>
 
