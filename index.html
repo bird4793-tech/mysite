@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>鳥 Chen | 國際專案管理與海外營運</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        paper: '#f9f8f6',
+                        ink: '#111111',
+                        accent: '#c85a32',
+                        muted: '#666360',
+                        subtleCard: '#f0ede6'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        serif: ['Playfair Display', 'Georgia', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,500;0,700;1,400&display=swap');
+        
+        :root {
+            --bg-color: #f9f8f6;
+            --text-color: #111111;
+            --muted-color: #666360;
+            --card-bg: #ffffff;
+            --subtle-card: #f0ede6;
+            --border-color: #e3dfd5;
+        }
+
+        .dark {
+            --bg-color: #121212;
+            --text-color: #f3f3f3;
+            --muted-color: #a0a0a0;
+            --card-bg: #1a1a1a;
+            --subtle-card: #181818;
+            --border-color: #2a2a2a;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-color);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-[#c85a32] selection:text-white">
+
+    <!-- Toast Notification (No alert used) -->
+    <div id="toast" class="fixed bottom-8 right-8 z-50 transform translate-y-24 opacity-0 transition-all duration-300 bg-[var(--text-color)] text-[var(--bg-color)] px-6 py-4 rounded-lg shadow-xl flex items-center space-x-3 border border-white/15">
+        <div class="w-6 h-6 rounded-full bg-accent text-white flex items-center justify-center text-xs">
+            <i class="fa-solid fa-check"></i>
+        </div>
+        <span id="toast-message" class="text-xs tracking-wide">訊息已送出</span>
+    </div>
+
+    <!-- Magazine Split Layout Container -->
+    <div class="min-h-screen flex flex-col lg:flex-row">
+        
+        <!-- Left Column: Fixed / Sticky Profile Sidebar -->
+        <aside class="lg:w-[420px] lg:fixed lg:h-screen bg-[var(--subtle-card)] border-b lg:border-b-0 lg:border-r border-[var(--border-color)] p-8 lg:p-12 flex flex-col justify-between z-30 transition-colors duration-300">
+            <div class="space-y-8">
+                <!-- Branding & Profile Photo -->
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-14 h-14 rounded-full overflow-hidden border-2 border-accent shrink-0 shadow-sm bg-[var(--border-color)]">
+                            <img src="https://img.ai365.fans/cdn-cgi/image/width=1400,quality=90,format=auto/artworks/96198883-9a16-464f-9646-635d260d36b0/0dd80d1m2h2f.jpg" alt="鳥 Chen" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='https://placehold.co/150x150/111/fff?text=鳥';">
+                        </div>
+                        <div>
+                            <h1 class="font-bold text-sm tracking-tight text-[var(--text-color)]">鳥 Chen</h1>
+                            <p class="text-xs text-[var(--muted-color)] font-mono">International PM & Ops</p>
+                        </div>
+                    </div>
+                    <!-- Controls: Audio & Theme Toggle -->
+                    <div class="flex items-center space-x-2">
+                        <!-- Theme Toggle Button -->
+                        <button id="theme-toggle" onclick="toggleTheme()" class="w-10 h-10 rounded-full bg-[var(--card-bg)] border border-[var(--border-color)] flex items-center justify-center text-[var(--text-color)] hover:text-accent hover:border-accent transition-all shadow-sm" title="切換深色/淺色模式">
+                            <i id="theme-icon" class="fa-solid fa-moon text-xs"></i>
+                        </button>
+                        <!-- Audio Player Toggle Button -->
+                        <button id="audio-toggle" onclick="toggleAudio()" class="w-10 h-10 rounded-full bg-[var(--card-bg)] border border-[var(--border-color)] flex items-center justify-center text-[var(--text-color)] hover:text-accent hover:border-accent transition-all shadow-sm" title="播放/暫停背景音樂">
+                            <i id="audio-icon" class="fa-solid fa-volume-xmark text-xs"></i>
+                        </button>
+                    </div>
+                    <!-- Background Audio Element -->
+                    <audio id="bg-audio" loop preload="auto">
+                        <source src="https://img.ai365.fans/artworks/96198883-9a16-464f-9646-635d260d36b0/0vhktk05awkk.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
+
+                <!-- Navigation -->
+                <nav class="hidden lg:flex flex-col space-y-3 text-xs uppercase tracking-widest font-semibold text-[var(--muted-color)] pt-4">
+                    <a href="#about" class="hover:text-accent transition-colors flex items-center space-x-3 py-1">
+                        <span class="w-4 h-[1px] bg-[var(--muted-color)] inline-block"></span>
+                        <span>01 / About</span>
+                    </a>
+                    <a href="#experience" class="hover:text-accent transition-colors flex items-center space-x-3 py-1">
+                        <span class="w-4 h-[1px] bg-[var(--muted-color)] inline-block"></span>
+                        <span>02 / Experience</span>
+                    </a>
+                    <a href="#discipline" class="hover:text-accent transition-colors flex items-center space-x-3 py-1">
+                        <span class="w-4 h-[1px] bg-[var(--muted-color)] inline-block"></span>
+                        <span>03 / Discipline</span>
+                    </a>
+                    <a href="#contact" class="hover:text-accent transition-colors flex items-center space-x-3 py-1">
+                        <span class="w-4 h-[1px] bg-[var(--muted-color)] inline-block"></span>
+                        <span>04 / Contact</span>
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Sidebar Footer Info -->
+            <div class="hidden lg:block pt-6 border-t border-[var(--border-color)] text-xs text-[var(--muted-color)] space-y-2">
+                <p>Taipei, Taiwan</p>
+                <p class="font-mono text-[11px]">&copy; 2026 Bird Chen</p>
+            </div>
+        </aside>
+
+        <!-- Right Column: Scrollable Content -->
+        <main class="lg:ml-[420px] flex-1 px-6 sm:px-12 lg:px-20 py-16 lg:py-24 space-y-28">
+
+            <!-- Hero Section -->
+            <section id="about" class="space-y-8">
+                <div class="inline-block px-3 py-1 rounded bg-[var(--subtle-card)] border border-[var(--border-color)] text-[var(--text-color)] text-[11px] font-mono uppercase tracking-widest">
+                    Semiconductor & Tech Specialist
+                </div>
+                <h2 class="text-4xl sm:text-6xl font-serif font-medium leading-[1.1] text-[var(--text-color)]">
+                    Managing global operations with <span class="italic text-accent">precision</span> & discipline.
+                </h2>
+                <p class="text-base sm:text-lg text-[var(--muted-color)] font-light leading-relaxed max-w-2xl">
+                    擁有 10 年以上國際專案管理與海外營運經驗。專精半導體產業海外支援、跨國公部門補助計畫（SBIR 與東南亞專案）、全球大型科技展會統籌，以及高階旅宿籌備。
+                </p>
+
+                <!-- Core Expertise Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-6">
+                    <div class="p-6 rounded-xl bg-[var(--card-bg)] border border-[var(--border-color)] space-y-2 transition-colors duration-300">
+                        <h3 class="font-bold text-sm text-[var(--text-color)] flex items-center space-x-2">
+                            <i class="fa-solid fa-globe text-accent"></i>
+                            <span>International Sales</span>
+                        </h3>
+                        <p class="text-xs text-[var(--muted-color)] leading-relaxed">海外市場開發與客戶管理，統籌 Computex、CeBIT、IFA、GITEX GLOBAL 等國際大展。</p>
+                    </div>
+                    <div class="p-6 rounded-xl bg-[var(--card-bg)] border border-[var(--border-color)] space-y-2 transition-colors duration-300">
+                        <h3 class="font-bold text-sm text-[var(--text-color)] flex items-center space-x-2">
+                            <i class="fa-solid fa-landmark text-accent"></i>
+                            <span>Public Sector & Grants</span>
+                        </h3>
+                        <p class="text-xs text-[var(--muted-color)] leading-relaxed">主導 SBIR 計畫，協調越南、柬埔寨政府專案，嚴謹控管時程、預算與經費核銷。</p>
+                    </div>
+                    <div class="p-6 rounded-xl bg-[var(--card-bg)] border border-[var(--border-color)] space-y-2 transition-colors duration-300">
+                        <h3 class="font-bold text-sm text-[var(--text-color)] flex items-center space-x-2">
+                            <i class="fa-solid fa-microchip text-accent"></i>
+                            <span>Semiconductor Ops</span>
+                        </h3>
+                        <p class="text-xs text-[var(--muted-color)] leading-relaxed">支援海外子公司營運、跨部門流程協同，驅動訂單履行與製程改善。</p>
+                    </div>
+                    <div class="p-6 rounded-xl bg-[var(--card-bg)] border border-[var(--border-color)] space-y-2 transition-colors duration-300">
+                        <h3 class="font-bold text-sm text-[var(--text-color)] flex items-center space-x-2">
+                            <i class="fa-solid fa-hotel text-accent"></i>
+                            <span>Hospitality</span>
+                        </h3>
+                        <p class="text-xs text-[var(--muted-color)] leading-relaxed">參與台北新板希爾頓酒店前置籌備，建立高效營運支援體系。</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Experience Timeline -->
+            <section id="experience" class="space-y-12">
+                <div class="border-b border-[var(--border-color)] pb-4">
+                    <span class="text-xs font-mono uppercase tracking-widest text-accent">02 / Experience</span>
+                    <h3 class="text-2xl sm:text-3xl font-serif font-bold text-[var(--text-color)] mt-1">職業經歷</h3>
+                </div>
+
+                <div class="space-y-10">
+                    <!-- Job 1 -->
+                    <div class="space-y-3 pb-8 border-b border-[var(--border-color)]">
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-1">
+                            <h4 class="text-lg font-bold text-[var(--text-color)]">Senior Specialist</h4>
+                            <span class="text-xs font-mono text-[var(--muted-color)]">Jul 2025 - Aug 2026 · 1 yr 2 mos</span>
+                        </div>
+                        <p class="text-sm font-medium text-accent">Silicon Power 廣穎電通 · 全職 (Taipei)</p>
+                        <p class="text-xs text-[var(--muted-color)]">Overseas Operations, Cross-functional Collaboration, Order Fulfillment</p>
+                    </div>
+
+                    <!-- Job 2 -->
+                    <div class="space-y-3 pb-8 border-b border-[var(--border-color)]">
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-1">
+                            <h4 class="text-lg font-bold text-[var(--text-color)]">Project Coordinator</h4>
+                            <span class="text-xs font-mono text-[var(--muted-color)]">Jan 2024 - Dec 2024 · 1 yr</span>
+                        </div>
+                        <p class="text-sm font-medium text-accent">Overseas Community Affairs Council, Taiwan (R.O.C.) 僑務委員會 · 契約 (Taipei)</p>
+                        <p class="text-xs text-[var(--muted-color)]">Project Management, Budget Management, Compliance Review</p>
+                    </div>
+
+                    <!-- Job 3 -->
+                    <div class="space-y-3 pb-8 border-b border-[var(--border-color)]">
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-1">
+                            <h4 class="text-lg font-bold text-[var(--text-color)]">Project Specialist</h4>
+                            <span class="text-xs font-mono text-[var(--muted-color)]">May 2020 - Jul 2021 · 1 yr 3 mos</span>
+                        </div>
+                        <p class="text-sm font-medium text-accent">Small and Medium Enterprise and Startup Administration, MOEA 經濟部中小企業處 · 契約 (Taipei)</p>
+                        <p class="text-xs text-[var(--muted-color)]">Government Project Management, Grant Management</p>
+                    </div>
+
+                    <!-- Job 4 -->
+                    <div class="space-y-3 pb-8 border-b border-[var(--border-color)]">
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-1">
+                            <h4 class="text-lg font-bold text-[var(--text-color)]">Operations Secretary</h4>
+                            <span class="text-xs font-mono text-[var(--muted-color)]">Jul 2018 - Jan 2020 · 1 yr 7 mos</span>
+                        </div>
+                        <p class="text-sm font-medium text-accent">Hilton Taipei Sinban 台北新板希爾頓酒店 · 全職 (New Taipei City)</p>
+                        <p class="text-xs text-[var(--muted-color)]">Process Development, Executive Support</p>
+                    </div>
+
+                    <!-- Job 5 -->
+                    <div class="space-y-3">
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-1">
+                            <h4 class="text-lg font-bold text-[var(--text-color)]">Senior Overseas Sales Specialist</h4>
+                            <span class="text-xs font-mono text-[var(--muted-color)]">Jul 2014 - Jul 2018 · 4 yrs 1 mo</span>
+                        </div>
+                        <p class="text-sm font-medium text-accent">寰偉資訊 · 全職 (New Taipei City)</p>
+                        <p class="text-xs text-[var(--muted-color)]">International Sales, Trade Show Management</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Discipline Section -->
+            <section id="discipline" class="space-y-8">
+                <div class="border-b border-[var(--border-color)] pb-4">
+                    <span class="text-xs font-mono uppercase tracking-widest text-accent">03 / Discipline</span>
+                    <h3 class="text-2xl sm:text-3xl font-serif font-bold text-[var(--text-color)] mt-1">個人鍛鍊</h3>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div class="p-8 rounded-xl bg-[var(--card-bg)] border border-[var(--border-color)] space-y-3 transition-colors duration-300">
+                        <h4 class="font-bold text-base text-[var(--text-color)]">Muay Thai (泰拳)</h4>
+                        <p class="text-xs text-[var(--muted-color)] leading-relaxed">長期的泰拳訓練奠定絕佳體能與抗壓性，能在高壓環境中維持冷靜沉著的判斷力。</p>
+                    </div>
+                    <div class="p-8 rounded-xl bg-[var(--card-bg)] border border-[var(--border-color)] space-y-3 transition-colors duration-300">
+                        <h4 class="font-bold text-base text-[var(--text-color)]">Kali Escrima</h4>
+                        <p class="text-xs text-[var(--muted-color)] leading-relaxed">專研菲律賓武術 Kali Escrima，強化反應靈敏度與動態應變能力。</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Contact Section -->
+            <section id="contact" class="space-y-8 pb-12">
+                <div class="border-b border-[var(--border-color)] pb-4">
+                    <span class="text-xs font-mono uppercase tracking-widest text-accent">04 / Contact</span>
+                    <h3 class="text-2xl sm:text-3xl font-serif font-bold text-[var(--text-color)] mt-1">與我聯繫</h3>
+                </div>
+
+                <form id="contact-form" onsubmit="handleFormSubmit(event)" class="p-8 sm:p-10 rounded-xl bg-[var(--card-bg)] border border-[var(--border-color)] space-y-6 transition-colors duration-300">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div>
+                            <label for="name" class="block text-xs font-mono uppercase tracking-wider text-[var(--muted-color)] mb-2">您的姓名</label>
+                            <input type="text" id="name" required class="w-full px-4 py-3 rounded-lg bg-[var(--bg-color)] border border-[var(--border-color)] text-[var(--text-color)] text-sm focus:outline-none focus:border-accent">
+                        </div>
+                        <div>
+                            <label for="email" class="block text-xs font-mono uppercase tracking-wider text-[var(--muted-color)] mb-2">電子郵件</label>
+                            <input type="email" id="email" required class="w-full px-4 py-3 rounded-lg bg-[var(--bg-color)] border border-[var(--border-color)] text-[var(--text-color)] text-sm focus:outline-none focus:border-accent">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="message" class="block text-xs font-mono uppercase tracking-wider text-[var(--muted-color)] mb-2">訊息內容</label>
+                        <textarea id="message" rows="4" required class="w-full px-4 py-3 rounded-lg bg-[var(--bg-color)] border border-[var(--border-color)] text-[var(--text-color)] text-sm focus:outline-none focus:border-accent"></textarea>
+                    </div>
+                    <button type="submit" class="w-full py-4 rounded-lg bg-[var(--text-color)] text-[var(--bg-color)] font-bold text-xs uppercase tracking-widest hover:bg-accent hover:text-white transition-all">
+                        送出訊息
+                    </button>
+                </form>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Script -->
+    <script>
+        const audio = document.getElementById('bg-audio');
+        const audioToggle = document.getElementById('audio-toggle');
+        const audioIcon = document.getElementById('audio-icon');
+        let isPlaying = false;
+
+        function toggleAudio() {
+            if (isPlaying) {
+                audio.pause();
+                isPlaying = false;
+                audioIcon.className = "fa-solid fa-volume-xmark text-xs";
+                showToast("背景音樂已暫停");
+            } else {
+                audio.play().then(() => {
+                    isPlaying = true;
+                    audioIcon.className = "fa-solid fa-volume-high text-xs text-accent animate-pulse";
+                    showToast("正在播放背景音樂");
+                }).catch(err => {
+                    console.error("Audio playback error:", err);
+                    showToast("無法播放音樂，請檢查連線或授權");
+                });
+            }
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const themeIcon = document.getElementById('theme-icon');
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                themeIcon.className = "fa-solid fa-moon text-xs";
+                showToast("已切換為淺色模式");
+            } else {
+                html.classList.add('dark');
+                themeIcon.className = "fa-solid fa-sun text-xs text-accent";
+                showToast("已切換為深色模式");
+            }
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            toastMessage.textContent = message;
+            
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 3500);
+        }
+
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            const name = document.getElementById('name').value;
+            showToast(`謝謝您，${name}！訊息已成功發送。`);
+            document.getElementById('contact-form').reset();
+        }
+    </script>
+
+</body>
+</html>
