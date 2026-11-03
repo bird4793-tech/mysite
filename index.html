@@ -68,7 +68,7 @@
 </head>
 <body class="antialiased selection:bg-[#c85a32] selection:text-white">
 
-    <!-- Toast Notification (No alert used) -->
+    <!-- Toast Notification -->
     <div id="toast" class="fixed bottom-8 right-8 z-50 transform translate-y-24 opacity-0 transition-all duration-300 bg-[var(--text-color)] text-[var(--bg-color)] px-6 py-4 rounded-lg shadow-xl flex items-center space-x-3 border border-white/15">
         <div class="w-6 h-6 rounded-full bg-accent text-white flex items-center justify-center text-xs">
             <i class="fa-solid fa-check"></i>
@@ -93,24 +93,18 @@
                             <p class="text-xs text-[var(--muted-color)] font-mono">International PM & Ops</p>
                         </div>
                     </div>
-                    <!-- Controls: Audio & Theme Toggle -->
-                    <div class="flex items-center space-x-2">
-                        <!-- Theme Toggle Button -->
-                        <button id="theme-toggle" onclick="toggleTheme()" class="w-10 h-10 rounded-full bg-[var(--card-bg)] border border-[var(--border-color)] flex items-center justify-center text-[var(--text-color)] hover:text-accent hover:border-accent transition-all shadow-sm" title="切換深色/淺色模式">
-                            <i id="theme-icon" class="fa-solid fa-moon text-xs"></i>
+                    <!-- Controls: Audio & Theme Toggle (行動版或一般狀態下保留) -->
+                    <div class="flex items-center space-x-2 lg:hidden">
+                        <button id="theme-toggle-mobile" onclick="toggleTheme()" class="w-10 h-10 rounded-full bg-[var(--card-bg)] border border-[var(--border-color)] flex items-center justify-center text-[var(--text-color)] hover:text-accent hover:border-accent transition-all shadow-sm" title="切換深色/淺色模式">
+                            <i class="theme-icon-el fa-solid fa-moon text-xs"></i>
                         </button>
-                        <!-- Audio Player Toggle Button -->
-                        <button id="audio-toggle" onclick="toggleAudio()" class="w-10 h-10 rounded-full bg-[var(--card-bg)] border border-[var(--border-color)] flex items-center justify-center text-[var(--text-color)] hover:text-accent hover:border-accent transition-all shadow-sm" title="播放/暫停背景音樂">
-                            <i id="audio-icon" class="fa-solid fa-volume-xmark text-xs"></i>
+                        <button id="audio-toggle-mobile" onclick="toggleAudio()" class="w-10 h-10 rounded-full bg-[var(--card-bg)] border border-[var(--border-color)] flex items-center justify-center text-[var(--text-color)] hover:text-accent hover:border-accent transition-all shadow-sm" title="播放/暫停背景音樂">
+                            <i class="audio-icon-el fa-solid fa-volume-xmark text-xs"></i>
                         </button>
                     </div>
-                    <!-- Background Audio Element -->
-                    <audio id="bg-audio" loop preload="auto">
-                        <source src="https://img.ai365.fans/artworks/96198883-9a16-464f-9646-635d260d36b0/0vhktk05awkk.mp3" type="audio/mpeg">
-                    </audio>
                 </div>
 
-                <!-- Navigation -->
+                <!-- Navigation (已移除 04 / Contact) -->
                 <nav class="hidden lg:flex flex-col space-y-3 text-xs uppercase tracking-widest font-semibold text-[var(--muted-color)] pt-4">
                     <a href="#about" class="hover:text-accent transition-colors flex items-center space-x-3 py-1">
                         <span class="w-4 h-[1px] bg-[var(--muted-color)] inline-block"></span>
@@ -124,10 +118,6 @@
                         <span class="w-4 h-[1px] bg-[var(--muted-color)] inline-block"></span>
                         <span>03 / Discipline</span>
                     </a>
-                    <a href="#contact" class="hover:text-accent transition-colors flex items-center space-x-3 py-1">
-                        <span class="w-4 h-[1px] bg-[var(--muted-color)] inline-block"></span>
-                        <span>04 / Contact</span>
-                    </a>
                 </nav>
             </div>
 
@@ -139,10 +129,31 @@
         </aside>
 
         <!-- Right Column: Scrollable Content -->
-        <main class="lg:ml-[420px] flex-1 px-6 sm:px-12 lg:px-20 py-16 lg:py-24 space-y-28">
+        <main class="lg:ml-[420px] flex-1 px-6 sm:px-12 lg:px-20 py-16 lg:py-24 space-y-28 relative">
+
+            <!-- Top Floating Controls & Contact Button (右上角固定/浮動區塊) -->
+            <div class="absolute top-6 right-6 sm:right-12 lg:right-20 flex items-center space-x-3 z-20">
+                <!-- Contact Quick Button -->
+                <a href="#contact" class="hidden sm:inline-flex items-center space-x-2 px-4 py-2.5 rounded-full bg-accent text-white text-xs font-semibold uppercase tracking-wider hover:opacity-90 transition-all shadow-sm">
+                    <i class="fa-solid fa-envelope text-[11px]"></i>
+                    <span>Contact Me</span>
+                </a>
+                <!-- Theme Toggle Button -->
+                <button id="theme-toggle" onclick="toggleTheme()" class="w-10 h-10 rounded-full bg-[var(--card-bg)] border border-[var(--border-color)] flex items-center justify-center text-[var(--text-color)] hover:text-accent hover:border-accent transition-all shadow-sm" title="切換深色/淺色模式">
+                    <i id="theme-icon" class="theme-icon-el fa-solid fa-moon text-xs"></i>
+                </button>
+                <!-- Audio Player Toggle Button -->
+                <button id="audio-toggle" onclick="toggleAudio()" class="w-10 h-10 rounded-full bg-[var(--card-bg)] border border-[var(--border-color)] flex items-center justify-center text-[var(--text-color)] hover:text-accent hover:border-accent transition-all shadow-sm" title="播放/暫停背景音樂">
+                    <i id="audio-icon" class="audio-icon-el fa-solid fa-volume-xmark text-xs"></i>
+                </button>
+            </div>
+            <!-- Background Audio Element -->
+            <audio id="bg-audio" loop preload="auto">
+                <source src="https://img.ai365.fans/artworks/96198883-9a16-464f-9646-635d260d36b0/0vhktk05awkk.mp3" type="audio/mpeg">
+            </audio>
 
             <!-- Hero Section -->
-            <section id="about" class="space-y-8">
+            <section id="about" class="space-y-8 pt-8 lg:pt-0">
                 <div class="inline-block px-3 py-1 rounded bg-[var(--subtle-card)] border border-[var(--border-color)] text-[var(--text-color)] text-[11px] font-mono uppercase tracking-widest">
                     Semiconductor & Tech Specialist
                 </div>
@@ -267,7 +278,7 @@
             <!-- Contact Section -->
             <section id="contact" class="space-y-8 pb-12">
                 <div class="border-b border-[var(--border-color)] pb-4">
-                    <span class="text-xs font-mono uppercase tracking-widest text-accent">04 / Contact</span>
+                    <span class="text-xs font-mono uppercase tracking-widest text-accent">Contact</span>
                     <h3 class="text-2xl sm:text-3xl font-serif font-bold text-[var(--text-color)] mt-1">與我聯繫</h3>
                 </div>
 
@@ -298,20 +309,22 @@
     <!-- Script -->
     <script>
         const audio = document.getElementById('bg-audio');
-        const audioToggle = document.getElementById('audio-toggle');
-        const audioIcon = document.getElementById('audio-icon');
         let isPlaying = false;
 
         function toggleAudio() {
             if (isPlaying) {
                 audio.pause();
                 isPlaying = false;
-                audioIcon.className = "fa-solid fa-volume-xmark text-xs";
+                document.querySelectorAll('.audio-icon-el').forEach(el => {
+                    el.className = "audio-icon-el fa-solid fa-volume-xmark text-xs";
+                });
                 showToast("背景音樂已暫停");
             } else {
                 audio.play().then(() => {
                     isPlaying = true;
-                    audioIcon.className = "fa-solid fa-volume-high text-xs text-accent animate-pulse";
+                    document.querySelectorAll('.audio-icon-el').forEach(el => {
+                        el.className = "audio-icon-el fa-solid fa-volume-high text-xs text-accent animate-pulse";
+                    });
                     showToast("正在播放背景音樂");
                 }).catch(err => {
                     console.error("Audio playback error:", err);
@@ -322,14 +335,17 @@
 
         function toggleTheme() {
             const html = document.documentElement;
-            const themeIcon = document.getElementById('theme-icon');
             if (html.classList.contains('dark')) {
                 html.classList.remove('dark');
-                themeIcon.className = "fa-solid fa-moon text-xs";
+                document.querySelectorAll('.theme-icon-el').forEach(el => {
+                    el.className = "theme-icon-el fa-solid fa-moon text-xs";
+                });
                 showToast("已切換為淺色模式");
             } else {
                 html.classList.add('dark');
-                themeIcon.className = "fa-solid fa-sun text-xs text-accent";
+                document.querySelectorAll('.theme-icon-el').forEach(el => {
+                    el.className = "theme-icon-el fa-solid fa-sun text-xs text-accent";
+                });
                 showToast("已切換為深色模式");
             }
         }
