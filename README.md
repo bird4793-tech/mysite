@@ -53,31 +53,3 @@ cd <your-repo-name>
 
 # 透過 Python 啟動輕量伺服器
 python3 -m http.server 8000
-function doPost(e) {
-  try {
-    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-    var data = JSON.parse(e.postData.contents);
-    
-    // 依序寫入：時間戳記、姓名、Email、訊息內容
-    sheet.appendRow([
-      new Date(),
-      data.name,
-      data.email,
-      data.message
-    ]);
-    
-    return ContentService
-      .createTextOutput(JSON.stringify({ result: 'success' }))
-      .setMimeType(ContentService.MimeType.JSON);
-  } catch (error) {
-    return ContentService
-      .createTextOutput(JSON.stringify({ result: 'error', error: error.message }))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-}
-const scriptURL = 'YOUR_NEW_APPS_SCRIPT_WEB_APP_URL';
-<ElicitationsGroup message="貼上並儲存後，如果需要進一步檢查或設定：">
-  <Elicitation label="排查 Markdown 語法渲染異常" query="我貼上 README 後 GitHub 頁面排版跑掉了，該如何檢查哪裡語法出錯？"/>
-  <Elicitation label="檢查試算表是否能正常收信" query="我要如何測試 Google Apps Script 有沒有成功把表單資料寫進 Google 試算表？"/>
-  <Elicitation label="建立 LICENSE 開源授權檔案" query="如何在 GitHub 上新增標準的 MIT License 授權檔案？"/>
-</ElicitationsGroup>
